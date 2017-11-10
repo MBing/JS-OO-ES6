@@ -1,16 +1,24 @@
 (function (window) {
 
-    function getTime () {
-        let time = new Date();
+    function createClock (elementId) {
         let clock = {
-            hours: time.getHours(),
-            minutes: time.getMinutes(),
-            seconds: time.getSeconds(),
+            update: function () {
+                let date = new Date();
+                let time = {
+                    hours: date.getHours(),
+                    minutes: date.getMinutes(),
+                    seconds: date.getSeconds(),
+                };
+                let clockEl = document.getElementById(elementId);
+
+                clockEl.innerHTML = `${formatDigits(time.hours)}:${formatDigits(time.minutes)}:${formatDigits(time.seconds)}`;
+            }
         };
 
-        let clockEl = document.getElementById('clock');
+        clock.update();
+        setInterval(clock.update, 1000)
 
-        clockEl.innerHTML = `${formatDigits(clock.hours)}:${formatDigits(clock.minutes)}:${formatDigits(clock.seconds)}`;
+        return clock;
     }
 
     function formatDigits (time) {
@@ -20,10 +28,10 @@
         return time;
     }
 
-    function startClock () {
-        getTime();
-        setInterval(getTime, 1000)
+    function onReady () {
+        let clock1 = createClock('clock');
+        let clock2 = createClock('clock2');
     }
 
-    window.onload = startClock;
+    window.onload = onReady;
 })(window);
