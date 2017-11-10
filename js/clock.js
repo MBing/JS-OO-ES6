@@ -1,14 +1,13 @@
 (function (window) {
 
-    function createClock (elementId) {
-        let clock = {
-            formatDigits: function (time) {
+    function Clock (elementId) {
+        this.formatDigits = function (time) {
                 if (time < 10) {
                     time = `0${time}`;
                 }
                 return time;
-            },
-            update: function () {
+            };
+        this.update = function () {
                 let date = new Date();
                 let time = {
                     hours: date.getHours(),
@@ -18,20 +17,20 @@
                 let clockEl = document.getElementById(elementId);
 
                 clockEl.innerHTML = `${this.formatDigits(time.hours)}:${this.formatDigits(time.minutes)}:${this.formatDigits(time.seconds)}`;
-            }
-        };
+            };
 
-        clock.update();
-        setInterval(clock.update.bind(clock), 1000)
-
-        return clock;
+        this.update();
+        var that = this;
+        setInterval(function () {
+            that.update();
+        }, 1000 );
     }
 
 
 
     function onReady () {
-        let clock1 = createClock('clock');
-        let clock2 = createClock('clock2');
+        let clock1 = new Clock('clock');
+        let clock2 = new Clock('clock2');
     }
 
     window.onload = onReady;
