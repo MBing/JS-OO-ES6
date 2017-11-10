@@ -1,0 +1,7 @@
+{
+  "name": "testclock",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "Martin Bing <bing.martin.photography@gmail.com>",
+  "license": "MIT"
+}
