@@ -2,6 +2,12 @@
 
     function createClock (elementId) {
         let clock = {
+            formatDigits: function (time) {
+                if (time < 10) {
+                    time = `0${time}`;
+                }
+                return time;
+            },
             update: function () {
                 let date = new Date();
                 let time = {
@@ -11,22 +17,17 @@
                 };
                 let clockEl = document.getElementById(elementId);
 
-                clockEl.innerHTML = `${formatDigits(time.hours)}:${formatDigits(time.minutes)}:${formatDigits(time.seconds)}`;
+                clockEl.innerHTML = `${this.formatDigits(time.hours)}:${this.formatDigits(time.minutes)}:${this.formatDigits(time.seconds)}`;
             }
         };
 
         clock.update();
-        setInterval(clock.update, 1000)
+        setInterval(clock.update.bind(clock), 1000)
 
         return clock;
     }
 
-    function formatDigits (time) {
-        if (time < 10) {
-            time = `0${time}`;
-        }
-        return time;
-    }
+
 
     function onReady () {
         let clock1 = createClock('clock');
