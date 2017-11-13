@@ -16,6 +16,25 @@
         }, 1000 );
     }
 
+    Date.__interval = 0;
+    Date.__aDates = [];
+
+    Date.addToInterval = function (date) {
+        this.__aDates.push(date);
+
+        if (!Date.__interval) {
+            Date.__interval = setInterval(function () {
+                Date.updateDates()
+            }, 1000);
+        }
+    };
+
+    Date.updateDates = function () {
+        for (let i = 0; i < this.__aDates.length; i++) {
+            this.__aDates[i].updateSeconds();
+        }
+    };
+
     Date.prototype.updateSeconds = function () {
         this.setSeconds(this.getSeconds()+1);
     };
@@ -26,9 +45,7 @@
         if (isAuto) {
             const that = this;
 
-            this.clockInterval = setInterval(function () {
-                that.updateSeconds();
-            }, 1000);
+            Date.addToInterval(this);
         }
     };
 
