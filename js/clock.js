@@ -123,6 +123,17 @@
             this.alarmHour = parseInt(alarm[0]);
             this.alarmMin = parseInt(alarm[1]);
 
+            if ((this.alarmHour > 0 && this.alarmHour < 24) &&
+                (this.alarmMin > 0 && this.alarmMin < 60)) {
+                const event = new Event('restart_tick');
+                e.srcElement.dispatchEvent(event);
+            }
+
+            // this.tick(true);
+        });
+
+        this.dom.addEventListener('restart_tick', () => {
+            console.log('event was triggered');
             this.tick(true);
         });
     };
