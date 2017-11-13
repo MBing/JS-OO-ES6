@@ -11,11 +11,20 @@
         this.date.autoClock(true)
         this.elementId = elementId;
         this.label = label;
-        this.update();
 
-        setInterval(function () {
-            that.update();
-        }, 1000 );
+        this.tick(true);
+    };
+
+    com.mbing.Clock.prototype.tick = function (shouldTick) {
+        clearInterval(this.myInternalInterval);
+
+        if (shouldTick) {
+            let that = this;
+            this.myInternalInterval = setInterval(function () {
+                that.update();
+            }, 1000 );
+            this.update();
+        }
     };
 
     Date.__interval = 0;
@@ -72,7 +81,6 @@
     };
 
     com.mbing.Clock.prototype.formatOutput = function (hours, minutes, seconds, label) {
-        console.log('hours', hours);
         return `${this.formatDigits(hours)}:${this.formatDigits(minutes)}:${this.formatDigits(seconds)} ${label}`;
     };
 
@@ -100,13 +108,26 @@
     // }
 
     // AlarmClock
-    com.mbing.AlarmClock = function (id, offset, label, alarmHour, alarmMin) {
-        com.mbing.TextClock.apply(this, arguments);
-        this.alarmMin = alarmMin;
-        this.alarmHour = alarmHour;
+    com.mbing.AlarmClock = function (id, offset, label) {
+        com.mbing.Clock.apply(this, arguments);
+
+        this.dom = document.getElementById(id);
+        this.dom.contentEditable = true;
+        this.dom.addEventListener('focus', (e) => {
+            e.srcElement.innerHTML = e.srcElement.innerHTML.slice(0, e.srcElement.innerHTML.lastIndexOf(':'));
+            this.tick(false);
+        });
+
+        this.dom.addEventListener('blur', (e) => {
+            let alarm = e.srcElement.innerHTML.split(':');
+            this.alarmHour = parseInt(alarm[0]);
+            this.alarmMin = parseInt(alarm[1]);
+
+            this.tick(true);
+        });
     };
 
-    com.mbing.AlarmClock.prototype = Object.create(com.mbing.TextClock.prototype);
+    com.mbing.AlarmClock.prototype = Object.create(com.mbing.Clock.prototype);
     com.mbing.AlarmClock.prototype.constructor = com.mbing.AlarmClock;
 
     com.mbing.AlarmClock.prototype.formatOutput = function (hours, minutes, seconds, label) {
@@ -118,7 +139,7 @@
             return 'ALARM WAKE UP';
         }
 
-        return `${this.formatDigits(hours)}:${this.formatDigits(minutes)}:${this.formatDigits(seconds)} ${label}`;
+        return com.mbing.Clock.prototype.formatOutput.apply(this, arguments);
     };
 
     const LiveDate = function (a, b, c) {
@@ -126,9 +147,9 @@
     };
 
     const onReady = function () {
-        const clock1 = new com.mbing.Clock('clock');
+        const clock1 = new com.mbing.AlarmClock('clock');
         const clock2 = new com.mbing.TextClock('clock2', -300, 'ETC');
-        const clock3 = new com.mbing.AlarmClock('clock3', -300, 'ETC', 17,8);
+        const clock3 = new com.mbing.Clock('clock3', -300, 'ETC');
 
         LiveDate.call(clock1, 1,2,3); // list up items
         LiveDate.apply(clock2, [1,2,3]); // array of items
