@@ -1,6 +1,8 @@
 (function (window) {
+    let com = com || {};
+    com.mbing = com.mbing || {};
 
-    function Clock (elementId, offset = 0, label = 'UTC') {
+    com.mbing.Clock = function (elementId, offset = 0, label = 'UTC') {
         const d = new Date();
         const that = this;
 
@@ -49,7 +51,7 @@
         }
     };
 
-    Clock.prototype.formatDigits = function (time) {
+    com.mbing.Clock.prototype.formatDigits = function (time) {
         if (time < 10) {
             time = `0${time}`;
         }
@@ -57,7 +59,7 @@
         return time;
     };
 
-    Clock.prototype.update = function () {
+    com.mbing.Clock.prototype.update = function () {
         const date = this.date;
         const time = {
             hours: date.getHours(),
@@ -70,8 +72,8 @@
     };
 
     function onReady () {
-        const clock1 = new Clock('clock');
-        const clock2 = new Clock('clock2', -300, 'ETC');
+        const clock1 = new com.mbing.Clock('clock');
+        const clock2 = new com.mbing.Clock('clock2', -300, 'ETC');
     }
 
     window.onload = onReady;
