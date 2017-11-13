@@ -4,14 +4,11 @@
 
     com.mbing.Clock = function (elementId, offset = 0, label = 'UTC') {
         const d = new Date();
-        const that = this;
-
         this.offset = (offset + d.getTimezoneOffset()) * 60 * 1000;
         this.date = new Date(this.offset + d.getTime());
-        this.date.autoClock(true)
+        this.date.autoClock(true);
         this.elementId = elementId;
         this.label = label;
-
         this.tick(true);
     };
 
@@ -51,11 +48,7 @@
     };
 
     Date.prototype.autoClock = function (isAuto) {
-        // clearInterval(this.clockInterval);
-
         if (isAuto) {
-            const that = this;
-
             Date.addToInterval(this);
         }
     };
@@ -128,8 +121,6 @@
                 const event = new Event('restart_tick');
                 e.srcElement.dispatchEvent(event);
             }
-
-            // this.tick(true);
         });
 
         this.dom.addEventListener('restart_tick', () => {
