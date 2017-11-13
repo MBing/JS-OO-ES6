@@ -68,8 +68,34 @@
         };
         let clockEl = document.getElementById(this.elementId);
 
-        clockEl.innerHTML = `${this.formatDigits(time.hours)}:${this.formatDigits(time.minutes)}:${this.formatDigits(time.seconds)} ${this.label}`;
+        clockEl.innerHTML = this.formatOutput(this.hours, this.minutes, this.seconds, this.label);
     };
+
+    com.mbing.Clock.prototype.formatOutput = function (hours, minutes, seconds, label) {
+        return `${this.formatDigits(hours)}:${this.formatDigits(minutes)}:${this.formatDigits(seconds)} ${label}`
+    };
+
+    com.mbing.TextClock = function (id, offset, label) {
+        com.mbing.Clock.apply(this, arguments);
+    };
+
+    com.mbing.TextClock.prototype.formatOutput = function (hours, minutes, seconds, label) {
+        return `${this.formatDigits(hours)} Hour ${this.formatDigits(minutes)} minutes ${this.formatDigits(seconds)} seconds ${label}`
+    };
+
+    com.mbing.TextClock.prototype = Object.create(com.mbing.Clock.prototype);
+    com.mbing.TextClock.prototype.constructor = com.mbing.TextClock;
+
+    // // < IE8 polyfill
+    // // usage:
+    // // com.mbing.TextClock.prototype = createObject(com.mbing.Clock.prototype, com.mbing.TextClock);
+    // function createObject(proto, cons) {
+    //     function c () {};
+    //     c.prototype = proto;
+    //     c.prototype.constructor = cons;
+    //
+    //     return new c();
+    // }
 
     const LiveDate = function (a, b, c) {
         console.log(this, a, b, c);
@@ -77,10 +103,10 @@
 
     const onReady = function () {
         const clock1 = new com.mbing.Clock('clock');
-        const clock2 = new com.mbing.Clock('clock2', -300, 'ETC');
+        const clock2 = new com.mbing.TextClock('clock2', -300, 'ETC');
 
-        LiveDate.call(clock1, 1,2,3);
-        LiveDate.apply(clock2, [1,2,3]);
+        LiveDate.call(clock1, 1,2,3); // list up items
+        LiveDate.apply(clock2, [1,2,3]); // array of items
     };
 
     window.onload = onReady;
