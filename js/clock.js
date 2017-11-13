@@ -1,5 +1,5 @@
 (function (window) {
-    let com = com || {};
+    let com = window.com || {};
     com.mbing = com.mbing || {};
 
     com.mbing.Clock = function (elementId, offset = 0, label = 'UTC') {
@@ -16,7 +16,7 @@
         setInterval(function () {
             that.update();
         }, 1000 );
-    }
+    };
 
     Date.__interval = 0;
     Date.__aDates = [];
@@ -71,10 +71,17 @@
         clockEl.innerHTML = `${this.formatDigits(time.hours)}:${this.formatDigits(time.minutes)}:${this.formatDigits(time.seconds)} ${this.label}`;
     };
 
-    function onReady () {
+    const LiveDate = function (a, b, c) {
+        console.log(this, a, b, c);
+    };
+
+    const onReady = function () {
         const clock1 = new com.mbing.Clock('clock');
         const clock2 = new com.mbing.Clock('clock2', -300, 'ETC');
-    }
+
+        LiveDate.call(clock1, 1,2,3);
+        LiveDate.apply(clock2, [1,2,3]);
+    };
 
     window.onload = onReady;
 })(window);
