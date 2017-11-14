@@ -9,19 +9,16 @@
         this.date.autoClock(true);
         this.elementId = elementId;
         this.label = label;
-        this.tick(true);
+
+        let that = this;
+
+        Date.addToInterval(function () {
+            that.update();
+        })
     };
 
     com.mbing.Clock.prototype.tick = function (shouldTick) {
-        clearInterval(this.myInternalInterval);
-
-        if (shouldTick) {
-            let that = this;
-            this.myInternalInterval = setInterval(function () {
-                that.update();
-            }, 1000 );
-            this.update();
-        }
+        this.isTicking = shouldTick;
     };
 
     Date.__interval = 0;
@@ -39,7 +36,13 @@
 
     Date.updateDates = function () {
         for (let i = 0; i < this.__aDates.length; i++) {
-            this.__aDates[i].updateSeconds();
+            if (this.__aDates[i] instanceof Date) {
+                this.__aDates[i].updateSeconds();
+            } else if (this.__aDates[i] instanceof Function) {
+                this.__aDates[i]();
+            } else if (this.__aDates[i] && this.__aDates[i]['update']) {
+                this.__aDates[i].update();
+            }
         }
     };
 
@@ -62,15 +65,17 @@
     };
 
     com.mbing.Clock.prototype.update = function () {
-        const date = this.date;
-        const time = {
-            hours: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-        };
-        let clockEl = document.getElementById(this.elementId);
+        if (this.isTicking) {
+            const date = this.date;
+            const time = {
+                hours: date.getHours(),
+                minutes: date.getMinutes(),
+                seconds: date.getSeconds(),
+            };
+            let clockEl = document.getElementById(this.elementId);
 
-        clockEl.innerHTML = this.formatOutput(time.hours, time.minutes, time.seconds, this.label);
+            clockEl.innerHTML = this.formatOutput(time.hours, time.minutes, time.seconds, this.label);
+        }
     };
 
     com.mbing.Clock.prototype.formatOutput = function (hours, minutes, seconds, label) {
